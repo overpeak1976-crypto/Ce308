@@ -61,7 +61,7 @@ const App = () => {
           <Text>ระดับอุดมศึกษา: มหาลัยธุรกิจบัณฑิตย์</Text>
         </View>
         <View style={styles.listItem}>
-          <Text>สาขา: วิศวกรรมคอมพิวเตอร์(ชั้นปีที่3 qdqwda)p</Text>
+          <Text>สาขา: วิศวกรรมคอมพิวเตอร์(ชั้นปีที่3)</Text>
         </View>
       </View>
 
@@ -69,7 +69,7 @@ const App = () => {
         <Text style={styles.title}>ที่อยู่:tdt</Text>
         {Array.from({ length: 1 }).map((_, index) => (
           <View key={index} style={styles.listItem}>
-            <Text>150/2 </Text>
+            <Text>150/2 ถ.สุวินทวงศ์ </Text>
           </View>
         ))}
       </View>
