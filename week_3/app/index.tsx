@@ -2,10 +2,18 @@ import React from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const DATA = [
-  { id: "1", title: "การใช้ View" },
-  { id: "2", title: "การใช้ Text" },
-  { id: "3", title: "การใช้ ScrollView" },
-  { id: "4", title: "การใช้ FlatList" },
+  { id: "1", title: "เล่นเกม Valorant" },
+  { id: "2", title: "ซูชิ ราเมนและอาหารญี่ปุ่น" },
+  { id: "3", title: "ดูซีรี่ย์ & หนังในNetflix" },
+  { id: "4", title: "เล่นบาสเกตบอลและออกกำลังกาย" },
+  { id: "5", title: "นอนดึกตื่นสายๆ" },
+];
+
+const DATA_2 = [
+  { id: "1", title: "การตื่นเช้ามาเรียนตอน 9 โมง" },
+  { id: "2", title: "สั่งให้ทำงานแล้วมีเวลากำหนดส่ง 15 นาที" },
+  { id: "3", title: "เสียงฟ้าร้องตอนฝนตก" },
+  { id: "4", title: "เล่นเกมแพ้แล้วแรงค์ลด" },
 ];
 
 const App = () => {
@@ -23,7 +31,7 @@ const App = () => {
 
       {/* ส่วนหัวข้อ (Header) */}
       <View style={styles.header}>
-        <Text style={styles.headerText}> My Profile</Text>
+        <Text style={styles.headerText}>My Profile</Text>
       </View>
 
       {/* การใช้ Flexbox จัดเรียงการ์ดแนว row */}
@@ -66,12 +74,10 @@ const App = () => {
       </View>
 
       <View style={styles.contentSection}>
-        <Text style={styles.title}>ที่อยู่:tdt</Text>
-        {Array.from({ length: 1 }).map((_, index) => (
-          <View key={index} style={styles.listItem}>
-            <Text>150/2 ถ.สุวินทวงศ์ </Text>
+        <Text style={styles.title}>ที่อยู่:</Text>
+          <View style={styles.listItem}>
+            <Text>150/2 ถ.สุวินทวงศ์ ต.หน้าเมือง อ.เมือง จ.ฉะเชิงเทรา</Text>
           </View>
-        ))}
       </View>
 
       <View style={styles.contentSection}>
@@ -81,6 +87,17 @@ const App = () => {
           keyExtractor={(item) => item.id} //กำหนด key ให้แต่ละแถว
           ListHeaderComponent={
             <Text style={styles.headerFlatList}>สิ่งที่ชอบ</Text>
+          }
+        />
+      </View>
+
+    <View style={styles.contentSection}>
+      <FlatList
+          data={DATA_2} 
+          renderItem={renderItem} 
+          keyExtractor={(item) => item.id} 
+          ListHeaderComponent={
+            <Text style={styles.headerFlatList}>สิ่งที่ไม่ชอบ</Text>
           }
         />
       </View>
@@ -159,7 +176,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    borderLeftColor: "purple",
+    backgroundColor: "purple",
     marginRight: 10,
   },
   itemText: {
