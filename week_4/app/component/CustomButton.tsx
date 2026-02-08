@@ -1,10 +1,10 @@
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from "react-native";
 
 type CustomButtonProps = {
     title: string;
     onPress: () => void;
-    variant?: "primary" | "secondary" | "danger"; //กำหนดสีปุ่มตามประเภท
-    size?: "sm" | "md" | "lg"; //กำหนดขนาดปุ่ม
+    variant?: "primary" | "secondary" | "danger";
+    size?: "sm" | "md" | "lg";
 };
 
 export const CustomButton = ({
@@ -13,29 +13,33 @@ export const CustomButton = ({
     variant = "primary",
     size = "md",
 }: CustomButtonProps) => {
-    //กำหนดสีของปุ่มตาม Variant
     const variantClasses = {
-        primary: "bg-blue-500 active:bg-blue-700",
-        secondary: "bg-gray-500 active:bg-gray-700",
-        danger: "bg-red-500 active:bg-red-700",
+        primary: "bg-blue-500",
+        secondary: "bg-gray-400",
+        danger: "bg-red-500",
     };
-    //
+
     const sizeClasses = {
-        sm: "px-2 py-1 text-sm",
-        md: "px-4 py-2 text-base",
-        lg: "px-6 py-3 text-lg",
+        sm: "px-3 py-1",
+        md: "px-4 py-1.5",
+        lg: "px-5 py-2",
     };
-    
+
     return (
-        <TouchableOpacity 
-        className={[
-            variantClasses[variant],
-            sizeClasses[size],
-            "rounded-lg active:bg-opacity-70"
-            ].join(' ')}
-            onPress={onPress}
+        <View className="self-start rounded-md overflow-hidden">
+            <TouchableOpacity
+                onPress={onPress}
+                className={[
+                "active:bg-opacity-70",
+                variantClasses[variant],
+                sizeClasses[size],
+                ].join(" ")}
             >
-                <Text className='text-white font-semibold'>{title}</Text>
-        </TouchableOpacity>
+                <Text className="text-white text-sm font-medium text-center">
+                {title}
+                </Text>
+            </TouchableOpacity>
+        </View>
     );
 };
+

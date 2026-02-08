@@ -1,19 +1,29 @@
 import { View, Text, FlatList } from 'react-native';
+import { ItemCard } from './ItemCard'
+
+export type Item = {
+    id: string;
+    productName: string;
+    price: number;
+    pcs: number;
+    btnSize: "sm" | "md" | "lg";
+    btnColor: "primary" | "secondary" | "danger";
+};
 
 type ItemListProps = {
-    items: { id: string; title: string, pcs: number }[];
+    items: Item[];
 };
 
 export const ItemList = ({ items }: ItemListProps) => {
     return (
-        <FlatList
-            data={items}
-            keyExtractor={(item) => item.id}
-            renderItem={({item}) => (
-                <View className='p-4 border-b border-gray-300'>
-                    <Text className='text-lg text-gray-800'>{item.title}-{item.pcs}</Text>
-                </View>
-            )}/>
-    )
+    <FlatList
+        data={items}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ padding: 16 }}
+        renderItem={({ item }) => (
+        <ItemCard {...item} />
+        )}
+    />
+    );
+};
 
-}
