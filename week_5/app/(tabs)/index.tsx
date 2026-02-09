@@ -92,14 +92,14 @@ const validateField = (name: string, value: string): string | undefined => {
       }
       return undefined;
 
-    case "confirmPassword":
-      if (!value) {
-        return "กรุณายืนยันรหัสผ่าน";
-      }
-      if (value !== FormData.password) {
-        return "รหัสผ่านไม่ตรงกัน";
-      }
-      return undefined;
+    // case "confirmPassword":
+    //   if (!value) {
+    //     return "กรุณายืนยันรหัสผ่าน";
+    //   }
+    //   if (value !== FormData.password) {
+    //     return "รหัสผ่านไม่ตรงกัน";
+    //   }
+    //   return undefined;
 
     default:
       return undefined;
