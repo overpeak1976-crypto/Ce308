@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import CustomInput from "./components/CustomInput";
 import CustomButton from "./components/CustomButton";
+import Checkbox from "./components/Checkbox";
 
 interface FormData {
   fullName: string;
@@ -19,6 +20,8 @@ interface FormData {
   phone: string;
   password: string;
   confirmPassword: string;
+  address: string;
+  acceptTerms: boolean;
 }
 
 interface FormErrors {
@@ -27,6 +30,8 @@ interface FormErrors {
   phone?: string;
   password?: string;
   confirmPassword?: string;
+  address?: string;
+  acceptTerms?: string;
 }
 
 export default function Index() {
@@ -36,13 +41,15 @@ export default function Index() {
     phone: "",
     password: "",
     confirmPassword: "",
+    address: "",
+    acceptTerms: false,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateField = (name: keyof FormData, value: string) => {
+  const validateField = (name: keyof FormData, value: any) => {
     switch (name) {
       case "fullName":
         if (!value.trim()) return "กรุณากรอกชื่อ-นามสกุล";
@@ -75,12 +82,22 @@ export default function Index() {
           return "รหัสผ่านไม่ตรงกัน";
         return;
 
+      case "address":
+        if (!value.trim()) return "กรุณากรอกที่อยู่";
+        if (value.trim().length < 10)
+          return "ต้องกรอกอย่างน้อย 10 ตัวอักษร";
+        return;
+
+      case "acceptTerms":
+        if (!value) return "กรุณายอมรับข้อกำหนดก่อน";
+        return;
+
       default:
         return;
     }
   };
 
-  const handleChange = (name: keyof FormData, value: string) => {
+  const handleChange = (name: keyof FormData, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (touched[name]) {
@@ -119,7 +136,7 @@ export default function Index() {
     return isValid;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     Keyboard.dismiss();
 
     if (!validateForm()) {
@@ -134,11 +151,8 @@ export default function Index() {
 
     setTimeout(() => {
       setIsLoading(false);
-      Alert.alert(
-        "สำเร็จ",
-        `ลงทะเบียนสำเร็จ\n\nชื่อ: ${formData.fullName}\nอีเมล: ${formData.email}\nเบอร์: ${formData.phone}`
-      );
-    }, 2000);
+      Alert.alert("สำเร็จ", "ลงทะเบียนเรียบร้อยแล้ว");
+    }, 1500);
   };
 
   const handleReset = () => {
@@ -148,6 +162,8 @@ export default function Index() {
       phone: "",
       password: "",
       confirmPassword: "",
+      address: "",
+      acceptTerms: false,
     });
     setErrors({});
     setTouched({});
@@ -157,7 +173,6 @@ export default function Index() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
@@ -183,7 +198,6 @@ export default function Index() {
               onBlur={() => handleBlur("fullName")}
               error={errors.fullName}
               touched={touched.fullName}
-              autoCapitalize="words"
             />
 
             <CustomInput
@@ -194,9 +208,6 @@ export default function Index() {
               onBlur={() => handleBlur("email")}
               error={errors.email}
               touched={touched.email}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
             />
 
             <CustomInput
@@ -208,6 +219,19 @@ export default function Index() {
               error={errors.phone}
               touched={touched.phone}
               keyboardType="numeric"
+            />
+
+            <CustomInput
+              label="ที่อยู่"
+              placeholder="กรอกที่อยู่"
+              value={formData.address}
+              onChangeText={(value) => handleChange("address", value)}
+              onBlur={() => handleBlur("address")}
+              error={errors.address}
+              touched={touched.address}
+              multiline
+              numberOfLines={4}
+              maxLength={200}
             />
 
             <CustomInput
@@ -234,6 +258,16 @@ export default function Index() {
               secureTextEntry
             />
 
+            {/* ✅ Checkbox */}
+            <Checkbox
+              value={formData.acceptTerms}
+              onValueChange={(value) =>
+                handleChange("acceptTerms", value)
+              }
+              error={errors.acceptTerms}
+              touched={touched.acceptTerms}
+            />
+
             <View className="mt-4 space-y-3">
               <CustomButton
                 title="ลงทะเบียน"
@@ -249,22 +283,9 @@ export default function Index() {
                 loading={isLoading}
               />
             </View>
-
-            <View className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
-              <Text className="text-blue-800 font-semibold text-base mb-2">
-                คำแนะนำ
-              </Text>
-              <Text className="text-blue-700 text-sm leading-5">
-                - กรอกข้อมูลให้ครบถ้วน{"\n"}
-                - อีเมลต้องมีรูปแบบที่ถูกต้อง{"\n"}
-                - เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก{"\n"}
-                - รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร
-              </Text>
-            </View>
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
-
