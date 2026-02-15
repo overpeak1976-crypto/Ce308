@@ -5,61 +5,70 @@ interface GenderRadioProps {
     value: string;
     onChange: (value: string) => void;
     error?: string;
-    touched?: boolean;
 }
 
-const options: { label: string; value: string }[] = [
-    { label: "ชาย", value: "male" },
-    { label: "หญิง", value: "female" },
-    { label: "ไม่ระบุ", value: "other" },
-];
+const options = ["ชาย", "หญิง", "ไม่ระบุ"];
 
-export default function GenderRadio({
+const GenderRadio: React.FC<GenderRadioProps> = ({
     value,
     onChange,
     error,
-    touched,
-    }: GenderRadioProps) {
-    const hasError = touched && error;
-
+    }) => {
     return (
-        <View className="mt-4">
-        <Text className="text-gray-700 font-semibold mb-2 text-base">
-            เพศ
+        <View style={{ marginBottom: 16 }}>
+        <Text style={{ marginBottom: 8, fontWeight: "600" }}>
+            เลือกเพศ *
         </Text>
 
-        <View className="flex-row items-center">
-            {options.map((item) => {
-            const selected = value === item.value;
-
-            return (
-                <Pressable
-                key={item.value}
-                onPress={() => onChange(item.value)}
-                className="flex-row items-center mr-6"
-                >
+        {/* Horizontal Layout */}
+        <View style={{ flexDirection: "row" }}>
+            {options.map((item) => (
+            <Pressable
+                key={item}
+                onPress={() => onChange(item)}
+                style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginRight: 20,
+                }}
+            >
+                {/* วงกลม */}
                 <View
-                    className={`w-5 h-5 rounded-full border-2 items-center justify-center mr-2
-                    ${selected ? "border-blue-600" : "border-gray-400"}
-                    ${hasError ? "border-red-500" : ""}
-                    `}
+                style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: "#333",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 6,
+                }}
                 >
-                    {selected && (
-                    <View className="w-2.5 h-2.5 rounded-full bg-blue-600" />
-                    )}
+                {value === item && (
+                    <View
+                    style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 5,
+                        backgroundColor: "#333",
+                    }}
+                    />
+                )}
                 </View>
 
-                <Text className="text-gray-700">{item.label}</Text>
-                </Pressable>
-            );
-            })}
+                <Text>{item}</Text>
+            </Pressable>
+            ))}
         </View>
 
-        {hasError && (
-            <Text className="text-red-500 text-sm mt-1">
+        {error && (
+            <Text style={{ color: "red", marginTop: 4 }}>
             {error}
             </Text>
         )}
         </View>
     );
-}
+};
+
+export default GenderRadio;

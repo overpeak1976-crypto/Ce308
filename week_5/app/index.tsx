@@ -13,6 +13,8 @@ import {
 import CustomInput from "./components/CustomInput";
 import CustomButton from "./components/CustomButton";
 import Checkbox from "./components/Checkbox";
+import GenderRadio from "./components/GenderRadio";
+import DatePickerField from "./components/DatePickerField";
 
 interface FormData {
   fullName: string;
@@ -21,6 +23,8 @@ interface FormData {
   password: string;
   confirmPassword: string;
   address: string;
+  gender: string;
+  birthDate: Date | null;
   acceptTerms: boolean;
 }
 
@@ -31,6 +35,8 @@ interface FormErrors {
   password?: string;
   confirmPassword?: string;
   address?: string;
+  gender?: string;
+  birthDate?: string;
   acceptTerms?: string;
 }
 
@@ -42,12 +48,26 @@ export default function Index() {
     password: "",
     confirmPassword: "",
     address: "",
+    gender: "",
+    birthDate: null,
     acceptTerms: false,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const validateAge = (date: Date) => {
+    const today = new Date();
+    let age = today.getFullYear() - date.getFullYear();
+    const m = today.getMonth() - date.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
 
   const validateField = (name: keyof FormData, value: any) => {
     switch (name) {
@@ -88,6 +108,16 @@ export default function Index() {
           return "ต้องกรอกอย่างน้อย 10 ตัวอักษร";
         return;
 
+      case "gender":
+        if (!value) return "กรุณาเลือกเพศ";
+        return;
+
+      case "birthDate":
+        if (!value) return "กรุณาเลือกวันเกิด";
+        if (validateAge(value) < 13)
+          return "อายุต้องมากกว่า 13 ปี";
+        return;
+
       case "acceptTerms":
         if (!value) return "กรุณายอมรับข้อกำหนดก่อน";
         return;
@@ -108,7 +138,6 @@ export default function Index() {
 
   const handleBlur = (name: keyof FormData) => {
     setTouched((prev) => ({ ...prev, [name]: true }));
-
     const error = validateField(name, formData[name]);
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
@@ -163,6 +192,8 @@ export default function Index() {
       password: "",
       confirmPassword: "",
       address: "",
+      gender: "",
+      birthDate: null,
       acceptTerms: false,
     });
     setErrors({});
@@ -190,21 +221,36 @@ export default function Index() {
           </View>
 
           <View className="px-6 mt-6 space-y-4">
+
             <CustomInput
               label="ชื่อ-นามสกุล"
-              placeholder="ระบุชื่อและนามสกุล"
               value={formData.fullName}
-              onChangeText={(value) => handleChange("fullName", value)}
+              onChangeText={(v) => handleChange("fullName", v)}
               onBlur={() => handleBlur("fullName")}
               error={errors.fullName}
               touched={touched.fullName}
             />
 
+            {/* ✅ Gender */}
+            <GenderRadio
+              value={formData.gender}
+              onChange={(v) => handleChange("gender", v)}
+              error={errors.gender}
+            />
+
+            {/* ✅ Birth Date */}
+            <DatePickerField
+              value={formData.birthDate}
+              onChange={(date) =>
+                handleChange("birthDate", date)
+              }
+              error={errors.birthDate}
+            />
+
             <CustomInput
               label="อีเมล"
-              placeholder="example@gmail.com"
               value={formData.email}
-              onChangeText={(value) => handleChange("email", value)}
+              onChangeText={(v) => handleChange("email", v)}
               onBlur={() => handleBlur("email")}
               error={errors.email}
               touched={touched.email}
@@ -212,9 +258,8 @@ export default function Index() {
 
             <CustomInput
               label="เบอร์โทรศัพท์"
-              placeholder="0812345678"
               value={formData.phone}
-              onChangeText={(value) => handleChange("phone", value)}
+              onChangeText={(v) => handleChange("phone", v)}
               onBlur={() => handleBlur("phone")}
               error={errors.phone}
               touched={touched.phone}
@@ -223,22 +268,19 @@ export default function Index() {
 
             <CustomInput
               label="ที่อยู่"
-              placeholder="กรอกที่อยู่"
               value={formData.address}
-              onChangeText={(value) => handleChange("address", value)}
+              onChangeText={(v) => handleChange("address", v)}
               onBlur={() => handleBlur("address")}
               error={errors.address}
               touched={touched.address}
               multiline
               numberOfLines={4}
-              maxLength={200}
             />
 
             <CustomInput
               label="รหัสผ่าน"
-              placeholder="อย่างน้อย 6 ตัวอักษร"
               value={formData.password}
-              onChangeText={(value) => handleChange("password", value)}
+              onChangeText={(v) => handleChange("password", v)}
               onBlur={() => handleBlur("password")}
               error={errors.password}
               touched={touched.password}
@@ -247,10 +289,9 @@ export default function Index() {
 
             <CustomInput
               label="ยืนยันรหัสผ่าน"
-              placeholder="ระบุรหัสผ่านอีกครั้ง"
               value={formData.confirmPassword}
-              onChangeText={(value) =>
-                handleChange("confirmPassword", value)
+              onChangeText={(v) =>
+                handleChange("confirmPassword", v)
               }
               onBlur={() => handleBlur("confirmPassword")}
               error={errors.confirmPassword}
@@ -258,11 +299,10 @@ export default function Index() {
               secureTextEntry
             />
 
-            {/* ✅ Checkbox */}
             <Checkbox
               value={formData.acceptTerms}
-              onValueChange={(value) =>
-                handleChange("acceptTerms", value)
+              onValueChange={(v) =>
+                handleChange("acceptTerms", v)
               }
               error={errors.acceptTerms}
               touched={touched.acceptTerms}
@@ -272,7 +312,6 @@ export default function Index() {
               <CustomButton
                 title="ลงทะเบียน"
                 onPress={handleSubmit}
-                variant="primary"
                 loading={isLoading}
               />
 
@@ -280,7 +319,6 @@ export default function Index() {
                 title="รีเซ็ตฟอร์ม"
                 onPress={handleReset}
                 variant="secondary"
-                loading={isLoading}
               />
             </View>
           </View>
