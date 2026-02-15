@@ -15,7 +15,7 @@ export default function Checkbox({
     error,
     touched,
 }: CheckboxProps) {
-const hasError = touched && error;
+    const hasError = touched && error;
 
     return (
         <View className="mt-4">
